@@ -1,0 +1,55 @@
+p {
+  margin-bottom: 20px;
+}
+
+.towers {
+  display: flex;
+  justify-content: center;
+  gap: 100px;
+}
+
+.tower {
+  cursor: pointer;
+  padding: 0 10px;
+  width: 5px;
+  height: 100px;
+  position: relative;
+}
+
+.tower.selected .line {
+  background: green;
+}
+
+.tower .line {
+  height: 100px;
+  width: 5px;
+  background: black;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: -1;
+}
+
+.tower:hover .line {
+  background-color: red;
+}
+
+.discs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  justify-content: end;
+}
+
+.disc {
+  height: 10px;
+  width: 100px;
+  background: blue;
+}
+
+.tower.selected .disc:first-child {
+  background: red;
+}
