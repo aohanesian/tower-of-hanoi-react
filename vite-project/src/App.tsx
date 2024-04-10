@@ -6,39 +6,26 @@ const NUM_DISCS: number = initialTowers[0].length;
 
 function App(): JSX.Element {
   const [towers, setTowers] = useState<number[][]>(initialTowers);
-  const [selectedTowerIndex, setSelectedTowerIndex] = useState<number | undefined>(undefined);
+  const [selectedTowerIndex, setSelectedTowerIndex] = useState<
+    number | undefined
+  >();
 
   function handleSelectedTower(clickedTowerIndex: number): void {
     if (selectedTowerIndex !== undefined) {
       const selectedTower: number[] = towers[selectedTowerIndex];
       const clickedTower: number[] = towers[clickedTowerIndex];
-
-      if (selectedTower.length === 0) {
-        alert("Selected tower has no discs.");
+      if (selectedTower[0] > (clickedTower[0] ?? Infinity)) {
+        setSelectedTowerIndex(clickedTowerIndex);
+        alert(`can't put bigger disc above small`);
         return;
       }
-
-      if (clickedTower.length > 0 && selectedTower[0] > clickedTower[0]) {
-        alert("Cannot move a larger disc onto a smaller one.");
-        return;
-      }
-
-      const newTowers: number[][] = towers.map((tower, index) => {
-        switch (index) {
-          case selectedTowerIndex:
-            return tower.slice(1);
-          case clickedTowerIndex:
-            return [selectedTower[0], ...tower];
-          default:
-            return tower;
-        }
-      });
-
+      const newTowers: number[][] = [...towers];
+      const shiftedDisc: number = newTowers[selectedTowerIndex].shift()!;
+      newTowers[clickedTowerIndex].unshift(shiftedDisc);
       setTowers(newTowers);
       setSelectedTowerIndex(undefined);
-
-      if (newTowers[clickedTowerIndex].length === NUM_DISCS) {
-        alert("Congratulations! You've solved the Towers of Hanoi.");
+      if (clickedTower.length >= NUM_DISCS && towers[0] != initialTowers[0]) {
+        alert(`you win!`);
       }
     } else {
       setSelectedTowerIndex(clickedTowerIndex);
@@ -46,25 +33,26 @@ function App(): JSX.Element {
   }
 
   return (
-    <>
-      <p>Click a tower to select the top disc, then click on another tower to move the disc. Click the selected tower again to unselect the disc.</p>
+    <><p>Click a tower to select top dic, click on another tower to move disc. Click selected tower again to unselect the disc</p>
       <div className="towers">
         {towers.map((discs, index) => (
           <div
-            className={"tower " + (selectedTowerIndex === index ? "selected" : "")}
+            className={
+              "tower " + (selectedTowerIndex === index ? "selected" : "")
+            }
             key={index}
             onClick={() => handleSelectedTower(index)}
           >
             <div className="line"></div>
             <div className="discs">
-              {discs.map((disc, idx) => (
+              {discs.map((disc, index) => (
                 <div
                   className="disc"
-                  key={idx}
+                  key={index}
                   style={{
                     width: `${disc * 10 + 10}px`,
-                    color: "green",
-                    fontWeight: "bold"
+                    color: `green`,
+                    fontWeight: `bold`,
                   }}
                 >
                   {disc}
