@@ -11,26 +11,36 @@ function App(): JSX.Element {
   >();
 
   function handleSelectedTower(clickedTowerIndex: number): void {
-    if (selectedTowerIndex !== undefined) {
-      const selectedTower: number[] = towers[selectedTowerIndex];
-      const clickedTower: number[] = towers[clickedTowerIndex];
-      if (selectedTower[0] > (clickedTower[0] ?? Infinity)) {
-        setSelectedTowerIndex(clickedTowerIndex);
-        alert(`can't put bigger disc above small`);
-        return;
-      }
-      const newTowers: number[][] = [...towers];
-      const shiftedDisc: number = newTowers[selectedTowerIndex].shift()!;
-      newTowers[clickedTowerIndex].unshift(shiftedDisc);
-      setTowers(newTowers);
-      setSelectedTowerIndex(undefined);
-      if (clickedTower.length >= NUM_DISCS && towers[0] != initialTowers[0]) {
-        alert(`you win!`);
-      }
-    } else {
+    if (selectedTowerIndex === undefined) {
       setSelectedTowerIndex(clickedTowerIndex);
+      return;
+    }
+
+    const selectedTower: number[] = towers[selectedTowerIndex];
+    const clickedTower: number[] = towers[clickedTowerIndex];
+
+    if (selectedTower.length === 0) {
+      setSelectedTowerIndex(undefined);
+      return;
+    }
+
+    if (selectedTower[0] > (clickedTower[0] ?? Infinity)) {
+      setSelectedTowerIndex(clickedTowerIndex);
+      alert(`Can't put bigger disc above smaller one`);
+      return;
+    }
+
+    const newTowers: number[][] = [...towers];
+    const shiftedDisc: number = newTowers[selectedTowerIndex].shift()!;
+    newTowers[clickedTowerIndex].unshift(shiftedDisc);
+    setTowers(newTowers);
+    setSelectedTowerIndex(undefined);
+
+    if (clickedTower.length >= NUM_DISCS && towers[0] !== initialTowers[0]) {
+      alert(`You win!`);
     }
   }
+
 
   return (
     <><p>Click a tower to select top dic, click on another tower to move disc. Click selected tower again to unselect the disc</p>
